@@ -1,38 +1,19 @@
-import os
-import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 url = 'https://m.facebook.com'
 
-# Directory where login data can be saved or retrieved
-output_directory = 'D:\data'  # Change this to the appropriate directory
-
-# Create a list to store all opened browser windows
-open_windows = []
-
-
-def banner():
-    os.system('clear')
-    _ = "-" * 44
-    ban = f"""
-    {_}
-    _     ____  _____ _  _     
-    / \   /  300/user/
-    | |   | / \|| |  _| || |\ ||
-    | |_/\| \_/|| |_//| || | \||
-    \____/\____/\____\\\\_/\_/  \|
-    [Author : ROCKFORT X KARINA ]
-    [Github : https://github.com/Rockfort73 ]
-    {_}
-    """
-    print(ban)
-
-
 def perform_login(user, pswd):
     try:
-        # Initialize the WebDriver for the new window
-        driver = webdriver.Chrome()
+        # Set up ChromeOptions for mobile emulation
+        mobile_emulation = {
+            "deviceName": "iPhone X"  # Ganti dengan perangkat seluler yang diinginkan
+        }
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+
+        # Initialize the WebDriver for the new window with mobile emulation options
+        driver = webdriver.Chrome(options=chrome_options)
 
         # Open the Facebook login page
         driver.get(url)
@@ -54,61 +35,15 @@ def perform_login(user, pswd):
 
         # Check if the login was successful (you can change this condition based on your needs)
         if 'login' not in driver.current_url:
-            print(f'\n   [\033[38;5;83mSuccessfully Log In!\033[0m] \033[0m\n\n')
-            open_windows.append(driver)
+            print('\nSuccessfully Log In!\n')
         else:
-            sys.exit("\033[38;5;208mIncorrect details\033[0m")
+            sys.exit("Incorrect details")
 
     except Exception as e:
         print(e)
         sys.exit('An error occurred during the login process')
 
-
-def login_new():
-    banner()
-    user = input('[✦] //Username or Email//: ')
-    pswd = input('[✦] //Password//: ')
-
-    perform_login(user, pswd)
-    save_login_data(user, pswd)
-
-
-def login_saved():
-    banner()
-    # Check if login data file exists
-    login_data_file = os.path.join(output_directory, 'login.txt')
-    if not os.path.exists(login_data_file):
-        sys.exit("\033[38;5;208mNo saved login data found\033[0m")
-
-    # Read all login data from the file
-    with open(login_data_file, 'r') as file:
-        lines = file.readlines()
-        login_data = []
-        user = None
-        for line in lines:
-            if line.startswith("Username/Email: "):
-                user = line.split(": ")[1].strip()
-            elif line.startswith("Password: "):
-                pswd = line.split(": ")[1].strip()
-                if user and pswd:
-                    login_data.append((user, pswd))
-
-    for user, pswd in login_data:
-        perform_login(user, pswd)
-
-
-def close_all_windows():
-    for window in open_windows:
-        window.quit()
-    open_windows.clear()
-
-
-def save_login_data(user, pswd):
-    login_data_file = os.path.join(output_directory, 'login.txt')
-    with open(login_data_file, 'a') as file:
-        file.write(f'Username/Email: {user}\n')
-        file.write(f'Password: {pswd}\n')
-
+# (Kode lainnya tetap sama)
 
 if __name__ == "__main__":
     while True:
@@ -127,4 +62,3 @@ if __name__ == "__main__":
             sys.exit("hallo karina!")
         else:
             print("Invalid choice. Please enter 1, 2, 3, or 4.")
-2
